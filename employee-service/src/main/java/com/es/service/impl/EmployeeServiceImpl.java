@@ -5,8 +5,12 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import com.es.dto.ApiResponseDto;
+import com.es.dto.DepartmentDTO;
 import com.es.dto.EmployeeDTO;
 import com.es.entity.Employee;
 import com.es.repo.EmployeeRepo;
@@ -20,11 +24,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 	
 	@Autowired
 	EmployeeRepo employeeRepo;
+	
+	@Autowired
+	RestTemplate restTemplate;
+	
 
 	@Override
 	public EmployeeDTO createNewEmployee(EmployeeDTO employeeDTO) {
 		// TODO Auto-generated method stub
-		return modelMapper.map(employeeRepo.save(modelMapper.map(employeeDTO, Employee.class)), EmployeeDTO.class) ;
+		return modelMapper.map(employeeRepo.save(modelMapper.map(employeeDTO, Employee.class)), EmployeeDTO.class);
 	}
 
 	@Override
@@ -38,5 +46,26 @@ public class EmployeeServiceImpl implements EmployeeService {
 		// TODO Auto-generated method stub
 		return modelMapper.map(employeeRepo.findById(id).orElseThrow(()-> new RuntimeException("Id not found")),EmployeeDTO.class);
 	}
+
+	@Override
+	public ApiResponseDto getEmployeDetails(Long id) {
+		// TODO Auto-generated method stub
+		Employee emp = employeeRepo.findById(id).orElseThrow(()-> new RuntimeException("Id not found"));
+//		below lone return in response entity so need to convert in DepartmentDTO
+		ResponseEntity<DepartmentDTO> responseEntity = restTemplate.getForEntity("http://localhost:8080/api/ds/"+ emp.getDepartmentCode() , DepartmentDTO.class);
+		
+//		Conversion into DepartmentDTo
+		DepartmentDTO  departmentDTO = responseEntity.getBody();
+		System.out.println("In RestTemplate!!" + departmentDTO.toString());
+		
+//		Providing values into API respose 
+		ApiResponseDto apiResponseDto = new ApiResponseDto();
+		apiResponseDto.setEmployeeDTO(modelMapper.map(emp,EmployeeDTO.class));
+		apiResponseDto.setDepartmentDTO(departmentDTO);
+		
+		return apiResponseDto;
+	}
+	
+	
 
 }

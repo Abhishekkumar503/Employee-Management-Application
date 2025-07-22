@@ -2,6 +2,7 @@ package com.es.service;
 
 import java.util.List;
 
+import com.es.dto.ApiResponseDto;
 import com.es.dto.EmployeeDTO;
 
 public interface EmployeeService {
@@ -11,5 +12,7 @@ public interface EmployeeService {
 	List<EmployeeDTO> getAllEmployee();
 
 	EmployeeDTO getEmployeeById(Long id);
+
+	ApiResponseDto getEmployeDetails(Long id);
 
 }
