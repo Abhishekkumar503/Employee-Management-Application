@@ -41,10 +41,16 @@ public class EmployeeController {
 		return new ResponseEntity<EmployeeDTO>(employeeService.getEmployeeById(id),HttpStatus.OK);
 	}
 	
-	@GetMapping("detail/{id}")
+	@GetMapping("detail/rest-template/{id}")
 	public ResponseEntity<ApiResponseDto> getEmployeDetails(@PathVariable Long id)
 	{
 		return new ResponseEntity<ApiResponseDto>(employeeService.getEmployeDetails(id),HttpStatus.OK);
+	}
+	
+	@GetMapping("detail/web-client/{id}")
+	public ResponseEntity<ApiResponseDto> getEmployeDetailsWebClient(@PathVariable Long id)
+	{
+		return new ResponseEntity<ApiResponseDto>(employeeService.getEmployeDetailsWebClient(id),HttpStatus.OK);
 	}
 
 }

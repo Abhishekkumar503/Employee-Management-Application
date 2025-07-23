@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.es.dto.ApiResponseDto;
 import com.es.dto.DepartmentDTO;
@@ -27,6 +28,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 	
 	@Autowired
 	RestTemplate restTemplate;
+	
+	@Autowired
+	WebClient webCleint;
 	
 
 	@Override
@@ -57,6 +61,28 @@ public class EmployeeServiceImpl implements EmployeeService {
 //		Conversion into DepartmentDTo
 		DepartmentDTO  departmentDTO = responseEntity.getBody();
 		System.out.println("In RestTemplate!!" + departmentDTO.toString());
+		
+//		Providing values into API respose 
+		ApiResponseDto apiResponseDto = new ApiResponseDto();
+		apiResponseDto.setEmployeeDTO(modelMapper.map(emp,EmployeeDTO.class));
+		apiResponseDto.setDepartmentDTO(departmentDTO);
+		
+		return apiResponseDto;
+	}
+	
+	@Override
+	public ApiResponseDto getEmployeDetailsWebClient(Long id) {
+		// TODO Auto-generated method stub
+		Employee emp = employeeRepo.findById(id).orElseThrow(()-> new RuntimeException("Id not found"));
+
+//		fetch by Webclient instance
+		DepartmentDTO departmentDTO = webCleint.get()
+		.uri("http://localhost:8080/api/ds/"+ emp.getDepartmentCode())
+		.retrieve()
+		.bodyToMono(DepartmentDTO.class)
+		.block();
+		
+		System.out.println("In WebClient!!" + departmentDTO.toString());
 		
 //		Providing values into API respose 
 		ApiResponseDto apiResponseDto = new ApiResponseDto();
