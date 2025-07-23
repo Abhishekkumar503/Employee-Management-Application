@@ -17,4 +17,6 @@ public interface EmployeeService {
 
 	ApiResponseDto getEmployeDetailsWebClient(Long id);
 
+	ApiResponseDto getEmployeDetailsFeignClient(Long id);
+
 }

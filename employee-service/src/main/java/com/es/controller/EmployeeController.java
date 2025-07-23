@@ -52,5 +52,11 @@ public class EmployeeController {
 	{
 		return new ResponseEntity<ApiResponseDto>(employeeService.getEmployeDetailsWebClient(id),HttpStatus.OK);
 	}
+	
+	@GetMapping("detail/feign-client/{id}")
+	public ResponseEntity<ApiResponseDto> getEmployeDetailsFeignClient(@PathVariable Long id)
+	{
+		return new ResponseEntity<ApiResponseDto>(employeeService.getEmployeDetailsFeignClient(id),HttpStatus.OK);
+	}
 
 }

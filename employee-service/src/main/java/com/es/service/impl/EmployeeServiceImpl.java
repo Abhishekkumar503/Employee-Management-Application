@@ -14,6 +14,7 @@ import com.es.dto.ApiResponseDto;
 import com.es.dto.DepartmentDTO;
 import com.es.dto.EmployeeDTO;
 import com.es.entity.Employee;
+import com.es.feign.APIClient;
 import com.es.repo.EmployeeRepo;
 import com.es.service.EmployeeService;
 
@@ -32,7 +33,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Autowired
 	WebClient webCleint;
 	
-
+	@Autowired
+	APIClient aPIClient;
+	
 	@Override
 	public EmployeeDTO createNewEmployee(EmployeeDTO employeeDTO) {
 		// TODO Auto-generated method stub
@@ -83,6 +86,24 @@ public class EmployeeServiceImpl implements EmployeeService {
 		.block();
 		
 		System.out.println("In WebClient!!" + departmentDTO.toString());
+		
+//		Providing values into API respose 
+		ApiResponseDto apiResponseDto = new ApiResponseDto();
+		apiResponseDto.setEmployeeDTO(modelMapper.map(emp,EmployeeDTO.class));
+		apiResponseDto.setDepartmentDTO(departmentDTO);
+		
+		return apiResponseDto;
+	}
+	
+	@Override
+	public ApiResponseDto getEmployeDetailsFeignClient(Long id) {
+		// TODO Auto-generated method stub
+		Employee emp = employeeRepo.findById(id).orElseThrow(()-> new RuntimeException("Id not found"));
+
+//		fetch by FeignClient instance
+		DepartmentDTO departmentDTO = aPIClient.getDepartmentByCode(emp.getDepartmentCode()).getBody();
+		
+		System.out.println("In FeignClient!!" + departmentDTO.toString());
 		
 //		Providing values into API respose 
 		ApiResponseDto apiResponseDto = new ApiResponseDto();
