@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.es.dto.DepartmentDTO;
 
-@FeignClient(url = "http://localhost:8080" , value ="DEPARTMENT-SERVICE")
+//@FeignClient(url = "http://localhost:8080" , value ="DEPARTMENT-SERVICE") // this is for version > 2022
+@FeignClient("DEPARTMENT-SERVICE")
 public interface APIClient {
 
 	@GetMapping("/api/ds/{code}")
