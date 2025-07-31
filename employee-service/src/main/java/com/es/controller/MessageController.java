@@ -18,6 +18,6 @@ public class MessageController {
 		return message;
 	}
 	
-	@PostMapping("actuator/refresh")
+	@PostMapping("actuator/busrefresh")
 	public void refreshActuator() {}
 }
