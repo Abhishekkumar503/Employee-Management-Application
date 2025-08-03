@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,8 +18,10 @@ import com.es.entity.Employee;
 import com.es.feign.APIClient;
 import com.es.repo.EmployeeRepo;
 import com.es.service.EmployeeService;
+import org.slf4j.LoggerFactory;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -37,6 +40,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 	
 	@Autowired
 	APIClient aPIClient;
+	
+	public static final Logger LOGGER = LoggerFactory.getLogger(EmployeeServiceImpl.class);
 	
 	@Override
 	public EmployeeDTO createNewEmployee(EmployeeDTO employeeDTO) {
@@ -58,8 +63,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	@CircuitBreaker(name = "${spring.application.name}", fallbackMethod = "getDefaultDepartmentByRestTemplate")
+	@Retry(name = "${spring.application.name}", fallbackMethod = "getDefaultDepartmentByRestTemplate")
+
 	public ApiResponseDto getEmployeDetails(Long id) {
 		// TODO Auto-generated method stub
+		
+		LOGGER.info("Inside getEmployeDetails");
+		
 		Employee emp = employeeRepo.findById(id).orElseThrow(()-> new RuntimeException("Id not found"));
 //		below lone return in response entity so need to convert in DepartmentDTO
 		ResponseEntity<DepartmentDTO> responseEntity = restTemplate.getForEntity("http://localhost:8080/api/ds/"+ emp.getDepartmentCode() , DepartmentDTO.class);
@@ -78,8 +88,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 	
 	@CircuitBreaker(name = "${spring.application.name}", fallbackMethod = "getDefaultDepartmentByWebClient")
 	@Override
+	@Retry(name = "${spring.application.name}", fallbackMethod = "getDefaultDepartmentByWebClient")
 	public ApiResponseDto getEmployeDetailsWebClient(Long id) {
 		// TODO Auto-generated method stub
+		
+		LOGGER.info("Inside getEmployeDetailsWebClient");
+		
 		Employee emp = employeeRepo.findById(id).orElseThrow(()-> new RuntimeException("Id not found"));
 
 //		fetch by Webclient instance
@@ -122,6 +136,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@CircuitBreaker(name = "${spring.application.name}", fallbackMethod = "getDefaultDepartment")
 	public ApiResponseDto getDefaultDepartmentByRestTemplate(Long id , Exception exception) {
 		// TODO Auto-generated method stub
+		
+		LOGGER.info("Inside getDefaultDepartmentByRestTemplate");
+		
 		Employee emp = employeeRepo.findById(id).orElseThrow(()-> new RuntimeException("Id not found"));
 		
 		DepartmentDTO departmentDTO = new DepartmentDTO();
@@ -144,6 +161,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 	
 	public ApiResponseDto getDefaultDepartmentByWebClient(Long id , Exception exception) {
 		// TODO Auto-generated method stub
+		
+		LOGGER.info("Inside getDefaultDepartmentByWebClient");
+		
 		Employee emp = employeeRepo.findById(id).orElseThrow(()-> new RuntimeException("Id not found"));
 
 		DepartmentDTO departmentDTO = new DepartmentDTO();
