@@ -14,8 +14,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.es.dto.ApiResponseDto;
 import com.es.dto.DepartmentDTO;
 import com.es.dto.EmployeeDTO;
+import com.es.dto.OrganizationDto;
 import com.es.entity.Employee;
 import com.es.feign.APIClient;
+import com.es.feign.APIClientForOrganiztion;
 import com.es.repo.EmployeeRepo;
 import com.es.service.EmployeeService;
 import org.slf4j.LoggerFactory;
@@ -41,6 +43,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Autowired
 	APIClient aPIClient;
 	
+	@Autowired
+	APIClientForOrganiztion aPIClientForOrganiztion;
+	
 	public static final Logger LOGGER = LoggerFactory.getLogger(EmployeeServiceImpl.class);
 	
 	@Override
@@ -64,15 +69,21 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	@CircuitBreaker(name = "${spring.application.name}", fallbackMethod = "getDefaultDepartmentByRestTemplate")
 	@Retry(name = "${spring.application.name}", fallbackMethod = "getDefaultDepartmentByRestTemplate")
-
 	public ApiResponseDto getEmployeDetails(Long id) {
 		// TODO Auto-generated method stub
 		
 		LOGGER.info("Inside getEmployeDetails");
 		
 		Employee emp = employeeRepo.findById(id).orElseThrow(()-> new RuntimeException("Id not found"));
-//		below lone return in response entity so need to convert in DepartmentDTO
+//		below line return in response entity so need to convert in DepartmentDTO
 		ResponseEntity<DepartmentDTO> responseEntity = restTemplate.getForEntity("http://localhost:8080/api/ds/"+ emp.getDepartmentCode() , DepartmentDTO.class);
+	
+//		below line return in response entity so need to convert in OrganizationDTO
+		ResponseEntity<OrganizationDto> organizationResponseEntity = restTemplate.getForEntity("http://localhost:8083/api/os/"+ emp.getOrganizationCode() , OrganizationDto.class);
+
+//		Conversion into DepartmentDTo
+		OrganizationDto  organizationDto = organizationResponseEntity.getBody();
+		System.out.println("In RestTemplate!!" + organizationDto.toString());		
 		
 //		Conversion into DepartmentDTo
 		DepartmentDTO  departmentDTO = responseEntity.getBody();
@@ -82,7 +93,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		ApiResponseDto apiResponseDto = new ApiResponseDto();
 		apiResponseDto.setEmployeeDTO(modelMapper.map(emp,EmployeeDTO.class));
 		apiResponseDto.setDepartmentDTO(departmentDTO);
-		
+		apiResponseDto.setOrganizationDto(organizationDto);
 		return apiResponseDto;
 	}
 	
@@ -105,11 +116,19 @@ public class EmployeeServiceImpl implements EmployeeService {
 		
 		System.out.println("In WebClient!!" + departmentDTO.toString());
 		
+		OrganizationDto organizationDto = webCleint.get()
+				.uri("http://localhost:8083/api/os/"+ emp.getOrganizationCode())
+				.retrieve()
+				.bodyToMono(OrganizationDto.class)
+				.block();
+		
+		System.out.println("In WebClient!!" + organizationDto.toString());
+		
 //		Providing values into API respose 
 		ApiResponseDto apiResponseDto = new ApiResponseDto();
 		apiResponseDto.setEmployeeDTO(modelMapper.map(emp,EmployeeDTO.class));
 		apiResponseDto.setDepartmentDTO(departmentDTO);
-		
+		apiResponseDto.setOrganizationDto(organizationDto);
 		return apiResponseDto;
 	}
 	
@@ -124,11 +143,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 		
 		System.out.println("In FeignClient!!" + departmentDTO.toString());
 		
+		OrganizationDto organizationDto = aPIClientForOrganiztion.getOrganization(emp.getOrganizationCode()).getBody();
+		
+		System.out.println("In FeignClient!!" + organizationDto.toString());
+		
 //		Providing values into API respose 
 		ApiResponseDto apiResponseDto = new ApiResponseDto();
 		apiResponseDto.setEmployeeDTO(modelMapper.map(emp,EmployeeDTO.class));
 		apiResponseDto.setDepartmentDTO(departmentDTO);
-		
+		apiResponseDto.setOrganizationDto(organizationDto);
 		return apiResponseDto;
 	}
 	
@@ -150,11 +173,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 		
 		System.out.println("In RestTemplate!!" + departmentDTO.toString());
 		
+		OrganizationDto organizationDto = webCleint.get()
+				.uri("http://localhost:8083/api/os/"+ emp.getOrganizationCode())
+				.retrieve()
+				.bodyToMono(OrganizationDto.class)
+				.block();
+		
 //		Providing values into API respose 
 		ApiResponseDto apiResponseDto = new ApiResponseDto();
 		apiResponseDto.setEmployeeDTO(modelMapper.map(emp,EmployeeDTO.class));
 		apiResponseDto.setDepartmentDTO(departmentDTO);
-		
+		apiResponseDto.setOrganizationDto(organizationDto);
 		return apiResponseDto;
 	}
 	
@@ -175,11 +204,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 		
 		System.out.println("In WebClient!!" + departmentDTO.toString());
 		
+		OrganizationDto organizationDto = new OrganizationDto();
+//		organizationDto.setId(404);
+		organizationDto.setOrganizationName("WebClient Default Organization");
+		organizationDto.setOrganizationDescription("WebClient Default Organization ( when Organization service not working )");
+		organizationDto.setOrganizationCode("WDO");
+//		organizationDto.setCreatedDate(System.currentTimeMillis());
 //		Providing values into API respose 
 		ApiResponseDto apiResponseDto = new ApiResponseDto();
 		apiResponseDto.setEmployeeDTO(modelMapper.map(emp,EmployeeDTO.class));
 		apiResponseDto.setDepartmentDTO(departmentDTO);
-		
+		apiResponseDto.setOrganizationDto(organizationDto);
 		return apiResponseDto;
 	}
 	
@@ -196,13 +231,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 		
 		System.out.println("In FeignClient!!" + departmentDTO.toString());
 		
+		OrganizationDto organizationDto = aPIClientForOrganiztion.getOrganization(emp.getOrganizationCode()).getBody();
+		
+		System.out.println("In FeignClient!!" + organizationDto.toString());
+		
 //		Providing values into API respose 
 		ApiResponseDto apiResponseDto = new ApiResponseDto();
 		apiResponseDto.setEmployeeDTO(modelMapper.map(emp,EmployeeDTO.class));
 		apiResponseDto.setDepartmentDTO(departmentDTO);
-		
+		apiResponseDto.setOrganizationDto(organizationDto);
 		return apiResponseDto;
 	}
-	
-
 }

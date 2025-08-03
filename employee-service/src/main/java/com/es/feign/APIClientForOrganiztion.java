@@ -10,10 +10,9 @@ import com.es.dto.OrganizationDto;
 
 
 //@FeignClient(url = "http://localhost:8080" , value ="DEPARTMENT-SERVICE") // this is for version > 2022
-@FeignClient("DEPARTMENT-SERVICE")
-public interface APIClient {
+@FeignClient("ORGANIZATION-SERVICE")
+public interface APIClientForOrganiztion {
 
-	@GetMapping("/api/ds/{code}")
-	public ResponseEntity<DepartmentDTO> getDepartmentByCode(@PathVariable String code);
-	
+	@GetMapping("api/os/{code}")
+    public ResponseEntity<OrganizationDto> getOrganization(@PathVariable("code") String organizationCode);
 }
