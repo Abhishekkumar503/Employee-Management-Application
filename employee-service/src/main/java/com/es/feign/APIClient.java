@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.es.dto.DepartmentDTO;
-import com.es.dto.OrganizationDto;
 
 
 //@FeignClient(url = "http://localhost:8080" , value ="DEPARTMENT-SERVICE") // this is for version > 2022

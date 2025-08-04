@@ -91,9 +91,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 		
 //		Providing values into API respose 
 		ApiResponseDto apiResponseDto = new ApiResponseDto();
-		apiResponseDto.setEmployeeDTO(modelMapper.map(emp,EmployeeDTO.class));
-		apiResponseDto.setDepartmentDTO(departmentDTO);
-		apiResponseDto.setOrganizationDto(organizationDto);
+		apiResponseDto.setEmployee(modelMapper.map(emp,EmployeeDTO.class));
+		apiResponseDto.setDepartment(departmentDTO);
+		apiResponseDto.setOrganization(organizationDto);
 		return apiResponseDto;
 	}
 	
@@ -126,9 +126,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 		
 //		Providing values into API respose 
 		ApiResponseDto apiResponseDto = new ApiResponseDto();
-		apiResponseDto.setEmployeeDTO(modelMapper.map(emp,EmployeeDTO.class));
-		apiResponseDto.setDepartmentDTO(departmentDTO);
-		apiResponseDto.setOrganizationDto(organizationDto);
+		apiResponseDto.setEmployee(modelMapper.map(emp,EmployeeDTO.class));
+		apiResponseDto.setDepartment(departmentDTO);
+		apiResponseDto.setOrganization(organizationDto);
 		return apiResponseDto;
 	}
 	
@@ -149,9 +149,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 		
 //		Providing values into API respose 
 		ApiResponseDto apiResponseDto = new ApiResponseDto();
-		apiResponseDto.setEmployeeDTO(modelMapper.map(emp,EmployeeDTO.class));
-		apiResponseDto.setDepartmentDTO(departmentDTO);
-		apiResponseDto.setOrganizationDto(organizationDto);
+		apiResponseDto.setEmployee(modelMapper.map(emp,EmployeeDTO.class));
+		apiResponseDto.setDepartment(departmentDTO);
+		apiResponseDto.setOrganization(organizationDto);
 		return apiResponseDto;
 	}
 	
@@ -181,9 +181,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 		
 //		Providing values into API respose 
 		ApiResponseDto apiResponseDto = new ApiResponseDto();
-		apiResponseDto.setEmployeeDTO(modelMapper.map(emp,EmployeeDTO.class));
-		apiResponseDto.setDepartmentDTO(departmentDTO);
-		apiResponseDto.setOrganizationDto(organizationDto);
+		apiResponseDto.setEmployee(modelMapper.map(emp,EmployeeDTO.class));
+		apiResponseDto.setDepartment(departmentDTO);
+		apiResponseDto.setOrganization(organizationDto);
 		return apiResponseDto;
 	}
 	
@@ -212,9 +212,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 //		organizationDto.setCreatedDate(System.currentTimeMillis());
 //		Providing values into API respose 
 		ApiResponseDto apiResponseDto = new ApiResponseDto();
-		apiResponseDto.setEmployeeDTO(modelMapper.map(emp,EmployeeDTO.class));
-		apiResponseDto.setDepartmentDTO(departmentDTO);
-		apiResponseDto.setOrganizationDto(organizationDto);
+		apiResponseDto.setEmployee(modelMapper.map(emp,EmployeeDTO.class));
+		apiResponseDto.setDepartment(departmentDTO);
+		apiResponseDto.setOrganization(organizationDto);
 		return apiResponseDto;
 	}
 	
@@ -237,9 +237,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 		
 //		Providing values into API respose 
 		ApiResponseDto apiResponseDto = new ApiResponseDto();
-		apiResponseDto.setEmployeeDTO(modelMapper.map(emp,EmployeeDTO.class));
-		apiResponseDto.setDepartmentDTO(departmentDTO);
-		apiResponseDto.setOrganizationDto(organizationDto);
+		apiResponseDto.setEmployee(modelMapper.map(emp,EmployeeDTO.class));
+		apiResponseDto.setDepartment(departmentDTO);
+		apiResponseDto.setOrganization(organizationDto);
 		return apiResponseDto;
 	}
 }
